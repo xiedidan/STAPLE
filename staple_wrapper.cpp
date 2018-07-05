@@ -29,10 +29,14 @@ class Staple {
         cv::Mat im = cv::Mat(
             image.shape(0),
             image.shape(1),
-            CV_8UC1,
+            CV_8UC3,
             image.get_data()
         );
 
+		// draw im to check if it's ok
+		cv::imshow("Staple", im);
+		cv::waitKey(0);
+		/*
 		// convert bbox from ndarray to cv::Rect_<float>
 		float* bboxData = (float*)bbox.get_data();
         cv::Rect_<float> region(
@@ -44,6 +48,7 @@ class Staple {
 
         tracker->tracker_staple_initialize(im, region);
         tracker->tracker_staple_train(im, true);
+		*/
     };
 
     np::ndarray update(np::ndarray image) {
@@ -51,7 +56,7 @@ class Staple {
         cv::Mat im = cv::Mat(
             image.shape(0),
             image.shape(1),
-            CV_8UC1,
+            CV_8UC3,
             image.get_data()
         );
 

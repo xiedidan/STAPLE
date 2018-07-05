@@ -11,7 +11,7 @@ find_package(OpenCV REQUIRED)
 target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS})
 
 # python wrapper
-add_library(Staple SHARED ./staple_wrapper.cpp ${SRC_LIST})
+add_library(StapleWrapper SHARED ./staple_wrapper.cpp ${SRC_LIST})
 include_directories(src)
 
 # dirty python dev
@@ -22,4 +22,4 @@ include_directories(${Python3_INCLUDE_DIRS})
 find_package(Boost 1.66.0 COMPONENTS python numpy REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 message(${Boost_LIBRARIES})
-target_link_libraries(Staple ${OpenCV_LIBS} ${Boost_LIBRARIES} ${Python3_LIBRARIES})
+target_link_libraries(StapleWrapper ${OpenCV_LIBS} ${Boost_LIBRARIES} ${Python3_LIBRARIES})

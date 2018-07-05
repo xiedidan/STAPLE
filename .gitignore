@@ -1,2 +1,5 @@
 vot2015
 build
+*.pyd
+*.dll
+
