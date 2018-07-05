@@ -11,16 +11,15 @@ find_package(OpenCV REQUIRED)
 target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS})
 
 # python wrapper
-add_library(Staple SHARED ./staple_wrapper.cpp)
+add_library(Staple SHARED ./staple_wrapper.cpp ${SRC_LIST})
 include_directories(src)
 
 # dirty python dev
-SET(Python3_INCLUDE_DIRS "D:\\software\\Anaconda3\\envs\\py35\\include")
-SET(Python3_LIBRARIES "D:\\software\\Anaconda3\\envs\\py35\\libs\\python35.lib")
+SET(Python3_INCLUDE_DIRS "D:\\software\\Anaconda3\\include")
+SET(Python3_LIBRARIES "D:\\software\\Anaconda3\\libs\\python36.lib")
 include_directories(${Python3_INCLUDE_DIRS})
 
-SET(Boost_DIR D:\\software\\boost_1_65_1)
-find_package(Boost 1.65.1 COMPONENTS python REQUIRED)
+find_package(Boost 1.66.0 COMPONENTS python numpy REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 message(${Boost_LIBRARIES})
 target_link_libraries(Staple ${OpenCV_LIBS} ${Boost_LIBRARIES} ${Python3_LIBRARIES})
