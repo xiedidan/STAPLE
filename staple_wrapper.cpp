@@ -1,10 +1,13 @@
 #include "staple_tracker.hpp"
 
+#include <iostream>
+
 #include <boost/python.hpp>
 #include <boost/python/numpy.hpp>
 
 #include <opencv2/opencv.hpp>
 
+using namespace std;
 using namespace cv;
 using namespace boost::python;
 
@@ -33,22 +36,17 @@ class Staple {
             image.get_data()
         );
 
-		// draw im to check if it's ok
-		cv::imshow("Staple", im);
-		cv::waitKey(0);
-		/*
 		// convert bbox from ndarray to cv::Rect_<float>
-		float* bboxData = (float*)bbox.get_data();
+		double* bboxData = (double*)bbox.get_data();
         cv::Rect_<float> region(
-            float(bboxData[2] - bboxData[0] / 2.0),
-            float(bboxData[3] - bboxData[1] / 2.0),
+            float(bboxData[0]),
+            float(bboxData[1]),
             float(bboxData[2] - bboxData[0]),
             float(bboxData[3] - bboxData[1])
         );
 
         tracker->tracker_staple_initialize(im, region);
         tracker->tracker_staple_train(im, true);
-		*/
     };
 
     np::ndarray update(np::ndarray image) {
@@ -63,13 +61,14 @@ class Staple {
         cv::Rect_<float> region = tracker->tracker_staple_update(im);
         tracker->tracker_staple_train(im, false);
 
-        // convert region to ndarray bbox
-        float bboxArray[] = {
-            region.tl().x,
-            region.tl().y,
-            region.br().x,
-            region.br().y
-        };
+        // convert region to ndarray bbox - put bboxArray to heap
+		// TODO : how to prevent memory leak?
+		float* bboxArray;
+		bboxArray = new float[4];
+		bboxArray[0] = region.tl().x;
+		bboxArray[1] = region.tl().y;
+		bboxArray[2] = region.br().x;
+		bboxArray[3] = region.br().y;
         
         np::ndarray bbox = np::from_data(
 			bboxArray,

@@ -9,4 +9,8 @@ if __name__ == '__main__':
     image = cv2.imread(image_file)
 
     tracker = Staple()
-    tracker.init(image, np.array([10., 20., 30., 40.]))
+    tracker.init(image, np.array([10., 20., 30., 40.], dtype=float))
+    
+    location = tracker.update(image)
+    print(location)
+    
