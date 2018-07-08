@@ -28,6 +28,12 @@ class Staple {
     };
 
     void init(np::ndarray image, np::ndarray bbox) {
+        total_time = 0.0;
+        frame_count = 0;
+
+        int64 tic, toc;
+        tic = cv::getTickCount();
+
         // convert image from ndarray to cv::Mat
         cv::Mat im = cv::Mat(
             image.shape(0),
@@ -45,11 +51,24 @@ class Staple {
             float(bboxData[3] - bboxData[1])
         );
 
+        /*
+        cv::rectangle(im, region, cv::Scalar(0, 128, 255), 2);
+        cv::imshow("update", im);
+        cv::waitKey(0);
+        */
+
         tracker->tracker_staple_initialize(im, region);
         tracker->tracker_staple_train(im, true);
+
+        toc = cv::getTickCount() - tic;
+        total_time += toc;
+        frame_count++;
     };
 
     np::ndarray update(np::ndarray image) {
+        int64 tic, toc;
+        tic = cv::getTickCount();
+
         // convert image from ndarray to cv::Mat
         cv::Mat im = cv::Mat(
             image.shape(0),
@@ -59,6 +78,13 @@ class Staple {
         );
 
         cv::Rect_<float> region = tracker->tracker_staple_update(im);
+
+        /*
+        cv::rectangle(im, region, cv::Scalar(0, 128, 255), 2);
+        cv::imshow("update", im);
+        cv::waitKey(0);
+        */
+       
         tracker->tracker_staple_train(im, false);
 
         // convert region to ndarray bbox - put bboxArray to heap
@@ -76,18 +102,35 @@ class Staple {
 			p::make_tuple(4),
 			p::make_tuple(sizeof(float)),
 			p::object()
-		);
+        );
+        
+        toc = cv::getTickCount() - tic;
+        total_time += toc;
+        frame_count++;
 
         return bbox;
     };
 
+    double getTime() {
+        return total_time / double(cv::getTickFrequency());
+    }
+
+    int getFrame() {
+        return frame_count;
+    }
+
     private:
     STAPLE_TRACKER* tracker;
+
+    double total_time = 0.0;
+    int frame_count = 0;
 };
 
 BOOST_PYTHON_MODULE(StapleWrapper) {
     class_<Staple>("Staple", init<>())
         .def("init", &Staple::init)
         .def("update", &Staple::update)
+        .add_property("time", &Staple::getTime)
+        .add_property("frame", &Staple::getFrame)
     ;
 }
