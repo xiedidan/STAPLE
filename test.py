@@ -12,19 +12,25 @@ debug = True
 
 if __name__ == '__main__':
     tracker = Staple()
+    python_total_time = 0.
 
     for i in range(seq_len):
         # read image
         image_file = '{}{:0>8d}.jpg'.format(image_path, i + 1)
         image = cv2.imread(image_file)
 
+        tic = time.time()
         if i == 0:
             tracker.init(image, np.array(init_position, dtype=float)) 
         else:
             location = tracker.update(image)
+        toc = time.time() - tic
+        python_total_time += toc
 
     total_time = tracker.time
     avg_time = total_time / seq_len
     fps = seq_len / total_time
 
-    print("Total time: {}, total len: {}, avg time: {}, FPS: {}".format(total_time, seq_len, avg_time, fps))
+    pfps = seq_len / python_total_time
+
+    print("Total time: {}, total len: {}, avg time: {}, FPS: {}, PTotal Time: {}, PFPS: {}".format(total_time, seq_len, avg_time, fps, python_total_time, pfps))
