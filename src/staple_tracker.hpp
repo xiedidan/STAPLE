@@ -59,6 +59,7 @@ public:
     void tracker_staple_train(const cv::Mat &im, bool first);
     void tracker_staple_initialize(const cv::Mat &im, cv::Rect_<float> region);
     cv::Rect tracker_staple_update(const cv::Mat &im);
+    cv::Mat get_last_response() { return last_response; };
 
 protected:
     staple_cfg default_parameters_staple(staple_cfg cfg);
@@ -116,6 +117,9 @@ private:
     cv::Mat ysf;
     cv::Mat sf_den;
     cv::Mat sf_num;
+
+    // for response reserach
+    cv::Mat last_response;
 
     int frameno;
 };

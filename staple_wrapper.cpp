@@ -119,6 +119,23 @@ class Staple {
         return frame_count;
     }
 
+    np::ndarray getResponse() {
+        // convert last_response from cv::Mat to ndarray response
+        cv::Mat last_response = tracker->get_last_response();
+        printf("size: %d, row: %d, col: %d\n", last_response.total(), last_response.rows, last_response.cols);
+        
+        float* responseArray = (float*)last_response.data;
+        np::ndarray response = np::from_data(
+            responseArray,
+            np::dtype::get_builtin<float>(),
+            p::make_tuple((int)(last_response.total())),
+            p::make_tuple(sizeof(float)),
+            p::object()
+        );
+
+        return response;
+    }
+
     private:
     STAPLE_TRACKER* tracker;
 
@@ -132,5 +149,6 @@ BOOST_PYTHON_MODULE(StapleWrapper) {
         .def("update", &Staple::update)
         .add_property("time", &Staple::getTime)
         .add_property("frame", &Staple::getFrame)
+        .add_property("response", &Staple::getResponse)
     ;
 }

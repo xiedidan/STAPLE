@@ -20,10 +20,16 @@ if __name__ == '__main__':
         image = cv2.imread(image_file)
 
         tic = time.time()
+
         if i == 0:
             tracker.init(image, np.array(init_position, dtype=float)) 
         else:
             location = tracker.update(image)
+
+            # TODO : draw response
+            response = tracker.response
+            print(response)
+
         toc = time.time() - tic
         python_total_time += toc
 
