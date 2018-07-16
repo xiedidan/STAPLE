@@ -125,10 +125,12 @@ class Staple {
 		np::ndarray response = np::from_data(
 			responseArray,
 			np::dtype::get_builtin<float>(),
-			p::make_tuple((int)(update_response.total())),
-			p::make_tuple(sizeof(float)),
+			p::make_tuple(update_response.rows, update_response.cols),
+			p::make_tuple(sizeof(float) * update_response.cols, sizeof(float)),
 			p::object()
 			);
+        
+        // response.reshape(p::make_tuple(update_response.rows, update_response.cols));
 
         return response;
     }

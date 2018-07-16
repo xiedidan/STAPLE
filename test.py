@@ -5,11 +5,15 @@ import numpy as np
 import cv2
 
 from pylab import *
+from mpl_toolkits.mplot3d import Axes3D
+
+fig = figure()
+ax = Axes3D(fig)
 
 image_path = './sequence/'
 seq_len = 105
 init_position = [492.000, 417.000, 539.000, 463.000]
-response_position = 20
+response_position = 50
 
 debug = True
 
@@ -31,8 +35,13 @@ if __name__ == '__main__':
 
             # draw response
             if (response_position - 1) == i:
-                response = tracker.response.reshape((75, 75))
-                imshow(response)
+                response = tracker.response
+                print(response.shape)
+                X = np.arange(0, response.shape[0], 1)
+                Y = np.arange(0, response.shape[1], 1)
+                X, Y = np.meshgrid(X, Y)
+                ax.plot_surface(X, Y, response, rstride=5, cstride=5, cmap='viridis')
+                # imshow(response)
                 show()
 
         toc = time.time() - tic
