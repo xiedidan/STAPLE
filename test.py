@@ -4,9 +4,12 @@ from StapleWrapper import Staple
 import numpy as np
 import cv2
 
+from pylab import *
+
 image_path = './sequence/'
 seq_len = 105
 init_position = [492.000, 417.000, 539.000, 463.000]
+response_position = 20
 
 debug = True
 
@@ -26,9 +29,11 @@ if __name__ == '__main__':
         else:
             location = tracker.update(image)
 
-            # TODO : draw response
-            response = tracker.response
-            print(response)
+            # draw response
+            if (response_position - 1) == i:
+                response = tracker.response.reshape((75, 75))
+                imshow(response)
+                show()
 
         toc = time.time() - tic
         python_total_time += toc

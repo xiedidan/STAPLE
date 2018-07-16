@@ -1283,7 +1283,7 @@ cv::Rect STAPLE_TRACKER::tracker_staple_update(const cv::Mat &im)
 
         cv::dft(scale_responsef, scale_response, cv::DFT_SCALE|cv::DFT_INVERSE|cv::DFT_REAL_OUTPUT);
 
-        last_response = scale_response.clone();
+        // last_response = scale_response.clone();
 
         //scale_response = real(ifft(sum(sf_num .* xsf, 1) ./ (sf_den + p.lambda) ));
 

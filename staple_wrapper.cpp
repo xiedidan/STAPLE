@@ -78,6 +78,7 @@ class Staple {
         );
 
         cv::Rect_<float> region = tracker->tracker_staple_update(im);
+        update_response = tracker->get_last_response();
 
         /*
         cv::rectangle(im, region, cv::Scalar(0, 128, 255), 2);
@@ -120,18 +121,14 @@ class Staple {
     }
 
     np::ndarray getResponse() {
-        // convert last_response from cv::Mat to ndarray response
-        cv::Mat last_response = tracker->get_last_response();
-        printf("size: %d, row: %d, col: %d\n", last_response.total(), last_response.rows, last_response.cols);
-        
-        float* responseArray = (float*)last_response.data;
-        np::ndarray response = np::from_data(
-            responseArray,
-            np::dtype::get_builtin<float>(),
-            p::make_tuple((int)(last_response.total())),
-            p::make_tuple(sizeof(float)),
-            p::object()
-        );
+		float* responseArray = (float*)update_response.data;
+		np::ndarray response = np::from_data(
+			responseArray,
+			np::dtype::get_builtin<float>(),
+			p::make_tuple((int)(update_response.total())),
+			p::make_tuple(sizeof(float)),
+			p::object()
+			);
 
         return response;
     }
@@ -141,6 +138,7 @@ class Staple {
 
     double total_time = 0.0;
     int frame_count = 0;
+    cv::Mat update_response;
 };
 
 BOOST_PYTHON_MODULE(StapleWrapper) {
